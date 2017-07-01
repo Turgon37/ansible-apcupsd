@@ -15,3 +15,13 @@
   with_items:
     - "{{ apcupsd__packages }}"
   tags: ['apcupsd']
+
+- name: Install apcupsd file
+  template:
+    src: apcupsd.conf.j2
+    dest: "{{ apcupsd__config_file }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: [ 'restart apcupsd' ]
+  tags: ['apcupsd', 'config']

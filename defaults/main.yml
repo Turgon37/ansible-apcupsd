@@ -3,3 +3,13 @@
 
 # List of packages to install
 apcupsd__packages: []
+
+apcupsd__config_file: /etc/apcupsd/apcupsd.conf
+
+# Enable or not the NIS server
+apcupsd__nis_enabled: True
+
+# Listen IP address of NIS server
+apcupsd__nis_address: 127.0.0.1
+# Listen port of NIS server
+apcupsd__nis_port: 3551
