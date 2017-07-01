@@ -1,0 +1,5 @@
+---
+# vars file for apcupsd (Debian specific)
+
+apcupsd__packages:
+  - apcupsd

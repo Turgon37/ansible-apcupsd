@@ -1,0 +1,5 @@
+---
+# Apcupsd role configuration
+
+# List of packages to install
+apcupsd__packages: []
