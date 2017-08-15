@@ -1,5 +1,5 @@
 ---
-- name: restart apcupsd
+- name: restart-apcupsd
   service:
-    name: apcupsd
+    name: '{{ apcupsd__service_name }}'
     state: restarted

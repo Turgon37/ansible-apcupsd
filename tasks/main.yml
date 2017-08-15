@@ -23,5 +23,5 @@
     owner: root
     group: root
     mode: 0644
-  notify: [ 'restart apcupsd' ]
+  notify: [ 'restart-apcupsd' ]
   tags: ['apcupsd', 'config']
