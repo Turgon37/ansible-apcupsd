@@ -1,27 +1,27 @@
 ---
+# tasks file for apcupsd
+
 - name: Include the OS specific variables
   include_vars: "{{ item }}"
   with_first_found:
     - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
         - "{{ ansible_distribution }}.yml"
         - "{{ ansible_os_family }}.yml"
+        - "defaults.yml"
       skip: true
-  tags: ['apcupsd']
+  tags: ['always']
 
-- name: Install the latest version of apcupsd packages
-  package:
-    name: '{{ item }}'
-    state: latest
-  with_items:
-    - "{{ apcupsd__packages }}"
-  tags: ['apcupsd']
+- name: Check role availability
+  fail:
+    msg: 'This module only works on Debian or derivatives like Ubuntu'
+  when: ansible_os_family != 'Debian'
 
-- name: Install apcupsd file
-  template:
-    src: apcupsd.conf.j2
-    dest: "{{ apcupsd__config_file }}"
-    owner: root
-    group: root
-    mode: 0644
-  notify: [ 'restart-apcupsd' ]
-  tags: ['apcupsd', 'config']
+- import_tasks: install.yml
+  tags: ['apcupsd', 'apcupsd-install']
+
+- import_tasks: configure.yml
+  tags: ['apcupsd', 'apcupsd-configure']
+
+- import_tasks: service.yml
+  tags: ['apcupsd', 'apcupsd-service']

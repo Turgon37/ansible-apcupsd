@@ -1,14 +1,16 @@
 ---
-# Apcupsd role configuration
+# defaults file for apcupsd
 
 # Simple placeholder to allow other roles to detect this role
 apcupsd__role: True
 
 # List of packages to install
-apcupsd__packages: []
+apcupsd__packages:
+  - apcupsd
 
 # The name of the system service
 apcupsd__service_name: apcupsd
+apcupsd__service_enabled: true
 
 # The master configuration file
 apcupsd__config_file: /etc/apcupsd/apcupsd.conf
