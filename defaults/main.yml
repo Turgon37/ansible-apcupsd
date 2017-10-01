@@ -15,6 +15,9 @@ apcupsd__service_enabled: true
 # The master configuration file
 apcupsd__config_file: /etc/apcupsd/apcupsd.conf
 
+# Apply a custom header on the configuration file
+#apcupsd__custom_header: 
+
 # Enable or not the NIS server
 apcupsd__nis_enabled: True
 
