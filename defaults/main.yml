@@ -4,6 +4,12 @@
 # Simple placeholder to allow other roles to detect this role
 apcupsd__role: True
 
+# Enable facts deploiement
+apcupsd__facts: True
+
+# Choose the monitoring backend to configure (if available)
+#apcupsd__monitoring:
+
 # List of packages to install
 apcupsd__packages:
   - apcupsd
@@ -25,3 +31,9 @@ apcupsd__nis_enabled: True
 apcupsd__nis_address: 127.0.0.1
 # Listen port of NIS server
 apcupsd__nis_port: 3551
+
+# Apcaccess executable
+apcupsd__apcaccess_executable: /sbin/apcaccess
+
+# command line options for apcaccess
+apcupsd__apcaccess_options: '{% if apcupsd__nis_enabled|bool %} -h {{ apcupsd__nis_address }}:{{ apcupsd__nis_port }}{% endif %}'

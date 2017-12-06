@@ -1,0 +1,19 @@
+---
+
+- name: Configure zabbix userparameters
+  include_role:
+    name: zabbix-common
+    tasks_from: userparameter
+  vars:
+    zabbix_common__userparameter:
+      name: apcupsd
+      comment: Query the apcupsd daemon
+      userparameter:
+        - key: apcupsd.value[*]
+          command: "{{ apcupsd__apcaccess_executable }} {{ apcupsd__apcaccess_options }} -p '$1'"
+          comment: Raw APC parameter
+        - key: apcupsd.float[*]
+          command: >
+            {{ apcupsd__apcaccess_executable }} {{ apcupsd__apcaccess_options }} -p '$1' | awk 'match($$0,/[0-9]+(\.[0-9]+)?/) { print substr($$0, RSTART, RLENGTH) }'
+          comment: Float APC parameter
+      state: present

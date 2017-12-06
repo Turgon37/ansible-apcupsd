@@ -25,3 +25,11 @@
 
 - import_tasks: service.yml
   tags: ['apcupsd', 'apcupsd-service']
+
+- include_tasks: 'monitoring-{{ apcupsd__monitoring }}.yml'
+  when: apcupsd__monitoring is defined
+  tags: ['apcupsd', 'apcupsd-monitoring']
+
+- include_tasks: facts.yml
+  when: apcupsd__facts|bool
+  tags: ['apcupsd', 'apcupsd-facts']
