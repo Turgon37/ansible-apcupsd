@@ -29,10 +29,11 @@ This role is available for Debian only
 
 The variables that can be passed to this role and a brief description about them are as follows:
 
-| Name                   | Types/Values | Description                                                                                                                                               |
-| -----------------------| -------------|---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| apcupsd__facts         | Boolean | Install the local fact script                                                                                                                                  |
-| apcupsd__monitoring    | String  | The name of the monitoring "profile" to use. Available 'zabbix')                                                                                               |
+| Name                     | Types/Values | Description                                                                                                                                              |
+| -------------------------| -------------|--------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| apcupsd__facts           | Boolean | Install the local fact script                                                                                                                                 |
+| apcupsd__monitoring      | String  | The name of the monitoring "profile" to use. Available 'zabbix')                                                                                              |
+| apcupsd__service_enabled | Boolean | Enable or not the service                                                                                                                                     |
 | apcupsd__nis_enabled   | Boolean | Boolean to enable or not the nis server, it allow network client to query the UPS status                                                                       |
 | apcupsd__nis_address   | String  | The network address on which the nis server will listen to                                                                                                     |
 | apcupsd__nis_port      | String  | The network port on which the nis server will listen to                                                                                                        |
@@ -49,6 +50,7 @@ By default the local fact are installed and expose the following variables :
 
 ## Example Playbook
 
+To use this role create or update your playbook according the following example :
 
 
 ```
