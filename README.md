@@ -40,6 +40,12 @@ The variables that can be passed to this role and a brief description about them
 
 ## Facts
 
+By default the local fact are installed and expose the following variables :
+
+
+* ```ansible_local.apcupsd.version_full```
+* ```ansible_local.apcupsd.version_major```
+
 
 ## Example Playbook
 
