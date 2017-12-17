@@ -9,10 +9,12 @@ This roles configure the apcups daemon to monitor an UPS of APC brand.
 
 ## Features
 
-At this day the role can be used to configure :
+Currently this role provide the following features :
 
   * apcupsd installation
   * minimal configuration
+  * monitoring items for Zabbix
+  * [local facts](#facts)
 
 ## Requirements
 
