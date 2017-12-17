@@ -25,7 +25,7 @@ This role is available for Debian only
 
 ### Dependencies
 
---
+If you use the zabbix monitoring profile you will need the role [ansible-zabbix-common](https://github.com/Turgon37/ansible-zabbix-common)
 
 
 ## Role Variables
