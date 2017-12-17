@@ -13,7 +13,8 @@ Currently this role provide the following features :
 
   * apcupsd installation
   * minimal configuration
-  * monitoring items for Zabbix
+  * monitoring items for
+    * Zabbix
   * [local facts](#facts)
 
 ## Requirements
