@@ -16,7 +16,7 @@ apcupsd__packages:
 
 # The name of the system service
 apcupsd__service_name: apcupsd
-apcupsd__service_enabled: true
+apcupsd__service_enabled: True
 
 # The master configuration file
 apcupsd__config_file: /etc/apcupsd/apcupsd.conf
