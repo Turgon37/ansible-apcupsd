@@ -1,6 +1,6 @@
 ---
 - name: "Ensure {{ apcupsd__service_name }} is started and enabled on boot"
   service:
-    name: '{{ apcupsd__service_name }}'
-    enabled: "{{ apcupsd__service_enabled|bool|ternary('yes', 'no') }}"
-    state: "{{ apcupsd__service_enabled|bool|ternary('started', 'stopped') }}"
+    name:    '{{ apcupsd__service_name }}'
+    enabled: "{{ apcupsd__service_enabled|bool }}"
+    state:   "{{ apcupsd__service_enabled|bool|ternary('started', 'stopped') }}"

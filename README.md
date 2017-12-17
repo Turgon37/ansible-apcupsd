@@ -1,35 +1,57 @@
 Ansible Role APC UPS Daemon
-========
+=========
 
-:warning: This role is under development
+:warning: This role is under development, some important (and possibly breaking) changes may happend. Don't use it in production level environments but you can eventually base your own role on this one :hammer:
 
-This roles configure an apcups daemon to monitor an UPS of APC brand
+:grey_exclamation: Before using this role, please know that all my Ansible role are fully written and accustomed to my IT infrastructure. So, even if they are as generic as possible they will not necessarily fill your needs, I advice you to carrefully analyse what they do and evaluate their capability to be installed securely on your servers.
 
-## OS Family
-
-This role is available for Debian
+This roles configure the apcups daemon to monitor an UPS of APC brand.
 
 ## Features
 
 At this day the role can be used to configure :
 
-  * apcupsd installation and configuration
+  * apcupsd installation
+  * minimal configuration
 
-## Configuration
+## Requirements
+
+### OS Family
+
+This role is available for Debian only
+
+### Dependencies
+
+--
+
+
+## Role Variables
 
 The variables that can be passed to this role and a brief description about them are as follows:
 
-| Name                 | Description                                                                             |
-| ---------------------| --------------------------------------------------------------------------------------- |
-| apcupsd__nis_enabled | Boolean to enable or not the nis server, it allow network client to query the UPS status|
-| apcupsd__nis_address | The network address on which the nis server will listen to                              |
-| apcupsd__nis_port    | The network port on which the nis server will listen to                                 |
+| Name                   | Types/Values | Description                                                                                                                                               |
+| -----------------------| -------------|---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| apcupsd__facts         | Boolean | Install the local fact script                                                                                                                                  |
+| apcupsd__monitoring    | String  | The name of the monitoring "profile" to use. Available 'zabbix')                                                                                               |
+| apcupsd__nis_enabled   | Boolean | Boolean to enable or not the nis server, it allow network client to query the UPS status                                                                       |
+| apcupsd__nis_address   | String  | The network address on which the nis server will listen to                                                                                                     |
+| apcupsd__nis_port      | String  | The network port on which the nis server will listen to                                                                                                        |
+| apcupsd__custom_header | String  | A optional string to put in the first line of the configuration file. Usefull to set to '## apcupsd.conf v1.1 ##' only is you use apcupsd with Jeedom appliance|
+
+## Facts
 
 
-### Example
+## Example Playbook
 
-  * Example
+
 
 ```
-
+    - hosts: servers
+      roles:
+         - apcupsd
 ```
+
+
+## License
+
+MIT
