@@ -1,28 +1,39 @@
 ---
-language: python
-python: "2.7"
+# Tell Travis to start Docker when it brings up an environment.
+services:
+  - docker
 
-before_install:
-  - sudo apt-get update --assume-yes -qq
-  - sudo apt-get install --assume-yes -qq python-apt python-pycurl
-
-install:
-  # Install Ansible
-  - sudo pip install ansible
-  - sudo pip install ansible-lint
-  # Add ansible.cfg to pick up roles path
-  - cp tests/ansible.cfg ./
+env:
+  # Provide a list of OSes we want to use for testing.
+  - distro: debian8
+  - distro: debian9
 
 script:
-  - ansible --version
-  # Check the role/playbook's syntax
-  - ansible-playbook --inventory-file tests/hosts --syntax-check tests/test.yml
-  # Check ansible lint
-  - tips=$(ansible-lint --nocolor -p .); echo "ansible-lint has detected '$(echo "$tips" | wc --lines)' improvable thing(s) in role"
-  # Run the role/playbook with ansible-playbook
-  - ansible-playbook --inventory-file tests/hosts --connection=local --sudo -vvvv tests/playbook.yml
-  # Run the role/playbook again, checking to make sure it's idempotent.
-  - >
-    ansible-playbook --inventory-file tests/hosts --connection=local --sudo tests/playbook.yml | grep --quiet 'changed=0.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
+  # Configure test script so we can run extra tests after playbook is run.
+  - export container_id=$(date +%s)
+  - export cleanup=false
+
+  # Download test shim.
+  - wget -O ${PWD}/tests/test.sh https://gist.githubusercontent.com/Turgon37/5b6e6553ef92dc65d1c7df3e1a1e290e/raw/
+  - chmod +x ${PWD}/tests/test.sh
+
+  # Run tests.
+  - ${PWD}/tests/test.sh
+
+  #
+  ## Specific roles tests
+  #
+  # Ensure APCUPSD is installed.
+  - 'docker exec --tty ${container_id} env TERM=xterm which apcupsd'
+  - 'docker exec --tty ${container_id} env TERM=xterm apcupsd --version'
+
+#install:
+  ## Install Ansible
+  #- sudo pip install ansible
+  #- sudo pip install ansible-lint
+  ## Add ansible.cfg to pick up roles path
+  #- cp tests/ansible.cfg ./
+
+
+  ## Check ansible lint
+  #- tips=$(ansible-lint --nocolor -p .); echo "ansible-lint has detected '$(echo "$tips" | wc --lines)' improvable thing(s) in role"
