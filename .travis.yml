@@ -7,12 +7,12 @@ services:
 
 env:
   # Provide a list of OSes we want to use for testing.
-  - distro: debian8
-  - distro: debian9
+  - DISTRIBUTION: debian8
+  - DISTIRBUTION: debian9
 
 script:
   # Configure test script so we can run extra tests after playbook is run.
-  - export cleanup=false
+  - export CLEANUP=false
 
   # Download test shim.
   - wget -O ${PWD}/tests/test.sh https://gist.githubusercontent.com/Turgon37/5b6e6553ef92dc65d1c7df3e1a1e290e/raw/
