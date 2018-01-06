@@ -12,7 +12,6 @@ env:
 
 script:
   # Configure test script so we can run extra tests after playbook is run.
-  - export container_id=$(date +%s)
   - export cleanup=false
 
   # Download test shim.
@@ -21,6 +20,7 @@ script:
 
   # Run tests.
   - ${PWD}/tests/test.sh
+  - export container_id=$(cat /tmp/container_id)
 
   #
   ## Specific roles tests
