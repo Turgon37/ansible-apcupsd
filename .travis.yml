@@ -26,5 +26,5 @@ script:
   ## Specific roles tests
   #
   # Ensure APCUPSD is installed.
-  - 'docker exec --tty ${container_id} env TERM=xterm which apcupsd'
-  - 'docker exec --tty ${container_id} env TERM=xterm apcupsd --version'
+  - 'docker exec --tty ${container_id} --env TERM=xterm which apcupsd'
+  - 'docker exec --tty ${container_id} --env TERM=xterm apcupsd --version'
