@@ -23,7 +23,9 @@ Currently this role provide the following features :
 
 ### OS Family
 
-This role is available for Debian only
+This role is available for
+
+  * Debian/Raspbian 8/9
 
 ### Dependencies
 
