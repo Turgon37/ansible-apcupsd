@@ -5,3 +5,4 @@
   service:
     name: '{{ apcupsd__service_name }}'
     state: restarted
+  when: apcupsd__service_enabled|bool

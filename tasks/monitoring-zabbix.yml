@@ -2,10 +2,10 @@
 
 - name: Configure zabbix userparameters
   include_role:
-    name: zabbix-common
+    name: zabbix-agent
     tasks_from: userparameter
   vars:
-    zabbix_common__userparameter:
+    zabbix_agent__userparameter:
       name: apcupsd
       comment: Query the apcupsd daemon
       userparameter:
