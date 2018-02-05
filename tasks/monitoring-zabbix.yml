@@ -8,13 +8,12 @@
     zabbix_agent__userparameter:
       name: apcupsd
       comment: Query the apcupsd daemon
-      userparameter:
+      userparameters:
         - key: apcupsd.value[*]
           command: "{{ apcupsd__apcaccess_executable }} {{ apcupsd__apcaccess_options }} -p '$1'"
           comment: Raw APC parameter
         - key: apcupsd.float[*]
-          command: >
-            {{ apcupsd__apcaccess_executable }} {{ apcupsd__apcaccess_options }} -p '$1' | awk 'match($$0,/[0-9]+(\.[0-9]+)?/) { print substr($$0, RSTART, RLENGTH) }'
+          command: "{{ apcupsd__apcaccess_executable }} {{ apcupsd__apcaccess_options }} -p '$1' | awk 'match($$0,/[0-9]+(\.[0-9]+)?/) { print substr($$0, RSTART, RLENGTH) }'"
           comment: Float APC parameter
         - key: apcupsd.values
           command: >
