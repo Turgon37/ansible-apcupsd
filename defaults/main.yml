@@ -14,6 +14,9 @@ apcupsd__facts: True
 apcupsd__packages:
   - apcupsd
 
+
+### SERVICE CONFIGURATION
+# ---------------------------------------
 # The name of the system service
 apcupsd__service_name: apcupsd
 apcupsd__service_enabled: True
@@ -21,19 +24,111 @@ apcupsd__service_enabled: True
 # The master configuration file
 apcupsd__config_file: /etc/apcupsd/apcupsd.conf
 
-# Apply a custom header on the configuration file
-#apcupsd__custom_header: 
 
-# Enable or not the NIS server
-apcupsd__nis_enabled: True
+### DEVICE CONFIGURATION
+# ---------------------------------------
 
-# Listen IP address of NIS server
-apcupsd__nis_address: 127.0.0.1
-# Listen port of NIS server
-apcupsd__nis_port: 3551
+# Use this to give your UPS a name in log files and such. This
+# is particulary useful if you have multiple UPSes. This does not
+# set the EEPROM. It should be 8 characters or less.
+apcupsd__upsname: ups1
+
+# Defines the type of cable connecting the UPS to your computer.
+#
+# Possible generic choices for <cable> are:
+#     simple, smart, ether, usb
+#
+#   Or a specific cable model number may be used:
+#     940-0119A, 940-0127A, 940-0128A, 940-0020B,
+#     940-0020C, 940-0023A, 940-0024B, 940-0024C,
+#     940-1524C, 940-0024G, 940-0095A, 940-0095B,
+#     940-0095C, 940-0625A, M-04-02-2000
+apcupsd__upscable: usb
+
+# To get apcupsd to work, in addition to defining the cable
+# above, you must also define a UPSTYPE, which corresponds to
+# the type of UPS you have (see the Description for more details).
+# You must also specify a DEVICE, sometimes referred to as a port.
+# For USB UPSes, please leave the DEVICE directive blank. For
+# other UPS types, you must specify an appropriate port or address.
+#
+# UPSTYPE   DEVICE           Description
+# apcsmart  /dev/tty**       Newer serial character device, appropriate for 
+#                            SmartUPS models using a serial cable (not USB).
+#
+# usb       <BLANK>          Most new UPSes are USB. A blank DEVICE
+#                            setting enables autodetection, which is
+#                            the best choice for most installations.
+#
+# net       hostname:port    Network link to a master apcupsd through apcupsd's 
+#                            Network Information Server. This is used if the
+#                            UPS powering your computer is connected to a 
+#                            different computer for monitoring.
+#
+# snmp      hostname:port:vendor:community
+#                            SNMP network link to an SNMP-enabled UPS device.
+#                            Hostname is the ip address or hostname of the UPS 
+#                            on the network. Vendor can be can be "APC" or 
+#                            "APC_NOTRAP". "APC_NOTRAP" will disable SNMP trap 
+#                            catching; you usually want "APC". Port is usually 
+#                            161. Community is usually "private".
+#
+# netsnmp   hostname:port:vendor:community
+#                            OBSOLETE
+#                            Same as SNMP above but requires use of the 
+#                            net-snmp library. Unless you have a specific need
+#                            for this old driver, you should use 'snmp' instead.
+#
+# dumb      /dev/tty**       Old serial character device for use with 
+#                            simple-signaling UPSes.
+#
+# pcnet     ipaddr:username:passphrase:port
+#                            PowerChute Network Shutdown protocol which can be 
+#                            used as an alternative to SNMP with the AP9617 
+#                            family of smart slot cards. ipaddr is the IP 
+#                            address of the UPS management card. username and 
+#                            passphrase are the credentials for which the card 
+#                            has been configured. port is the port number on 
+#                            which to listen for messages from the UPS, normally 
+#                            3052. If this parameter is empty or missing, the 
+#                            default of 3052 will be used.
+#
+# modbus    /dev/tty**       Serial device for use with newest SmartUPS models
+#                            supporting the MODBUS protocol.
+apcupsd__upstype: usb
+apcupsd__device:
+
+# LOCKFILE <path to lockfile>
+#   Path for device lock file. Not used on Win32.
+apcupsd__lockdir: /var/lock
+
+# Interval (in seconds) at which apcupsd polls the UPS for status. This
+# setting applies both to directly-attached UPSes (UPSTYPE apcsmart, usb,
+# dumb) and networked UPSes (UPSTYPE net, snmp).
+apcupsd__polltime: 60
+
+# Normally standalone unless you share an UPS using an APC ShareUPS card
+apcupsd__upsclass: standalone
+
+# Normally disable unless you share an UPS using an APC ShareUPS card.
+apcupsd__upsmode: disable
+
+### NETWORK CONFIGURATION
+# ---------------------------------------
+
+# Enables/Disables the network information server.
+# If netstatus is on, a network information
+# server process will be started for serving the STATUS and
+# EVENT data over the network (used by CGI programs).
+apcupsd__net_server: True
+
+# IP address on which NIS server will listen for incoming connections.
+apcupsd__net_server_address: 127.0.0.1
+# port to use for sending STATUS and EVENTS data over the network.
+apcupsd__net_server_port: 3551
 
 # Apcaccess executable
-apcupsd__apcaccess_executable: /sbin/apcaccess
+apcupsd__apcaccess_executable: /usr/bin/env apcaccess
 
 # command line options for apcaccess
-apcupsd__apcaccess_options: '{% if apcupsd__nis_enabled|bool %} -h {{ apcupsd__nis_address }}:{{ apcupsd__nis_port }}{% endif %}'
+apcupsd__apcaccess_options: '{% if apcupsd__net_server|bool %} -h {{ apcupsd__net_server_address }}:{{ apcupsd__net_server_port }}{% endif %}'

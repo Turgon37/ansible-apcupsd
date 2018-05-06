@@ -1,0 +1,3 @@
+---
+
+apcupsd__service_default: /etc/default/apcupsd

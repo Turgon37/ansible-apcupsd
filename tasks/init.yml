@@ -1,0 +1,12 @@
+---
+
+- name: Assert required variables
+  assert:
+    that:
+      - apcupsd__upsname|length <= 8
+      - apcupsd__upscable in ['simple', 'smart', 'ether', 'usb', '940-0119A', '940-0127A', '940-0128A', '940-0020B', '940-0020C', '940-0023A', '940-0024B', '940-0024C', '940-1524C', '940-0024G', '940-0095A', '940-0095B', '940-0095C', '940-0625A', 'M-04-02-2000']
+      - apcupsd__upstype in ['apcsmart', 'usb', 'net', 'snmp', 'netsnmp', 'dumb', 'pcnet', 'modbus']
+      - apcupsd__upsclass in ['standalone', 'shareslave', 'sharemaster']
+      - apcupsd__upsmode in ['disable', 'share']
+      - apcupsd__polltime|int
+      - apcupsd__net_server_port|int

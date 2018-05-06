@@ -25,5 +25,5 @@
             BEGIN{ FS= ":"; ORS = ""; print "{" }
             { printf "%s\"%s\": \"%s\"", separator, trim($1), trim($2); separator=","}
             END{ print "}" }'
-          comment: all APC parameters
+          comment: all APC parameters in JSON format
       state: present
