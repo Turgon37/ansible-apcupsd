@@ -41,10 +41,9 @@ The variables that can be passed to this role and a brief description about them
 | apcupsd__facts           | Boolean | Install the local fact script                                                                                                                                 |
 | apcupsd__monitoring      | String  | The name of the monitoring "profile" to use. Available 'zabbix')                                                                                              |
 | apcupsd__service_enabled | Boolean | Enable or not the service                                                                                                                                     |
-| apcupsd__nis_enabled   | Boolean | Boolean to enable or not the nis server, it allow network client to query the UPS status                                                                       |
-| apcupsd__nis_address   | String  | The network address on which the nis server will listen to                                                                                                     |
-| apcupsd__nis_port      | String  | The network port on which the nis server will listen to                                                                                                        |
-| apcupsd__custom_header | String  | A optional string to put in the first line of the configuration file. Usefull to set to '## apcupsd.conf v1.1 ##' only is you use apcupsd with Jeedom appliance|
+| apcupsd__net_server        | Boolean | Boolean to enable or not the nis server, it allow network client to query the UPS status                                                                       |
+| apcupsd__net_server_address| String  | The network address on which the nis server will listen to                                                                                                     |
+| apcupsd__net_server_port   | String  | The network port on which the nis server will listen to                                                                                                        |
 
 ## Facts
 

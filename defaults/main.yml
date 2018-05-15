@@ -113,6 +113,7 @@ apcupsd__upsclass: standalone
 # Normally disable unless you share an UPS using an APC ShareUPS card.
 apcupsd__upsmode: disable
 
+
 ### NETWORK CONFIGURATION
 # ---------------------------------------
 
@@ -126,6 +127,7 @@ apcupsd__net_server: True
 apcupsd__net_server_address: 127.0.0.1
 # port to use for sending STATUS and EVENTS data over the network.
 apcupsd__net_server_port: 3551
+
 
 # Apcaccess executable
 apcupsd__apcaccess_executable: /usr/bin/env apcaccess
