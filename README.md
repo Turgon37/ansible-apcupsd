@@ -2,6 +2,8 @@ Ansible Role APC UPS Daemon
 =========
 
 [![Build Status](https://travis-ci.org/Turgon37/ansible-apcupsd.svg?branch=master)](https://travis-ci.org/Turgon37/ansible-apcupsd)
+[![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![Ansible Role](https://img.shields.io/badge/ansible%20role-Turgon37.apcupsd-blue.svg)](https://galaxy.ansible.com/Turgon37/apcupsd/)
 
 :warning: This role is under development, some important (and possibly breaking) changes may happend. Don't use it in production level environments but you can eventually base your own role on this one :hammer:
 
