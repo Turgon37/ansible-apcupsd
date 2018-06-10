@@ -1,17 +1,15 @@
 galaxy_info:
   author: Pierre GINDRAUD
-  description: This role configure instance of APCUPS daemon
+  description: This role install and configure APCUPS daemon
   license: MIT
   min_ansible_version: 2.4
   platforms:
     - name: Debian
       versions:
-        - 9
-        - 8
-    - name: Raspbian
-      versions:
-        - 9
-        - 8
-  galaxy_tags: []
+        - jessie
+        - stretch
+  galaxy_tags:
+    - raspbian
+    - apcups
 
 dependencies: []

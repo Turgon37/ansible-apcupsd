@@ -2,16 +2,16 @@
 
 - name: Template configuration file
   template:
-    src:   apcupsd.conf.j2
-    dest:  '{{ apcupsd__config_file }}'
+    src: apcupsd.conf.j2
+    dest: '{{ apcupsd__config_file }}'
     owner: root
     group: root
-    mode:  0644
-  notify: [ 'restart-apcupsd' ]
+    mode: 0644
+  notify: ['restart-apcupsd']
 
 - name: Configure service default file
   lineinfile:
-    path:   '{{ apcupsd__service_default }}'
+    path: '{{ apcupsd__service_default }}'
     regexp: '^ISCONFIGURED='
-    line:   'ISCONFIGURED=yes'
+    line: 'ISCONFIGURED=yes'
   when: apcupsd__service_default is defined

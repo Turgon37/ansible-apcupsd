@@ -18,22 +18,28 @@
   when: ansible_os_family != 'Debian'
   tags: ['always']
 
-- import_tasks: init.yml
+- name: Import init tasks
+  import_tasks: init.yml
   tags: ['always']
 
-- import_tasks: install.yml
+- name: Import install tasks
+  import_tasks: install.yml
   tags: ['apcupsd', 'apcupsd-install']
 
-- import_tasks: configure.yml
+- name: Import configuration tasks
+  import_tasks: configure.yml
   tags: ['apcupsd', 'apcupsd-configure']
 
-- import_tasks: service.yml
+- name: Import service tasks
+  import_tasks: service.yml
   tags: ['apcupsd', 'apcupsd-service']
 
-- include_tasks: 'monitoring-{{ apcupsd__monitoring }}.yml'
+- name: Optionally include monitoring tasks
+  include_tasks: 'monitoring/{{ apcupsd__monitoring }}.yml'
   when: apcupsd__monitoring is defined
   tags: ['apcupsd', 'apcupsd-monitoring']
 
-- include_tasks: facts.yml
+- name: Optionally include facts tasks
+  include_tasks: facts.yml
   when: apcupsd__facts|bool
   tags: ['apcupsd', 'apcupsd-facts']
