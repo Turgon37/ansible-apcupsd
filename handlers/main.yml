@@ -3,6 +3,6 @@
 
 - name: restart-apcupsd
   service:
-    name:  '{{ apcupsd__service_name }}'
+    name: '{{ apcupsd__service_name }}'
     state: restarted
   when: apcupsd__service_enabled|bool

@@ -2,16 +2,16 @@
 
 - name: Create custom fact directory
   file:
-    path:  "{{ facts__dir|d('/etc/ansible/facts.d') }}"
+    path: "{{ facts__dir|d('/etc/ansible/facts.d') }}"
     owner: root
     group: root
-    mode:  0755
+    mode: 0755
     state: directory
   tags: ['apcupsd', 'apcupsd-facts']
 
 - name: Insert custom fact file
   copy:
-    src:  files/apcupsd.fact.py
+    src: files/apcupsd.fact.py
     dest: "{{ facts__dir|d('/etc/ansible/facts.d') }}/apcupsd.fact"
     mode: 0755
   tags: ['apcupsd', 'apcupsd-facts']

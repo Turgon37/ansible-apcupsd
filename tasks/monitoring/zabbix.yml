@@ -3,27 +3,35 @@
 - name: Configure zabbix userparameters
   include_role:
     name: zabbix-agent
-    tasks_from: userparameter
+    tasks_from: types/user_parameter
   vars:
     zabbix_agent__userparameter:
       name: apcupsd
       comment: Query the apcupsd daemon
       userparameters:
         - key: apcupsd.value[*]
-          command: "{{ apcupsd__apcaccess_executable }} {{ apcupsd__apcaccess_options }} -p '$1'"
+          command: >
+            {{ apcupsd__apcaccess_executable }}
+            {{ apcupsd__apcaccess_options }} -p '$1'"
           comment: Raw APC parameter
         - key: apcupsd.float[*]
           command: >
-            {{ apcupsd__apcaccess_executable }} {{ apcupsd__apcaccess_options }} -p '$1' | awk 'match($$0,/[0-9]+(\.[0-9]+)?/) { print substr($$0, RSTART, RLENGTH) }'
+            {{ apcupsd__apcaccess_executable }}
+            {{ apcupsd__apcaccess_options }} -p '$1'
+            | awk 'match($$0,/[0-9]+(\.[0-9]+)?/)
+            { print substr($$0, RSTART, RLENGTH) }'
           comment: Float APC parameter
         - key: apcupsd.values
           command: >
-            {{ apcupsd__apcaccess_executable }} {{ apcupsd__apcaccess_options }} | awk '
+            {{ apcupsd__apcaccess_executable }}
+            {{ apcupsd__apcaccess_options }} | awk '
             function ltrim(s) { sub(/^[ \t\r\n]+/, "", s); return s }
             function rtrim(s) { sub(/[ \t\r\n]+$/, "", s); return s }
             function trim(s) { return rtrim(ltrim(s)); }
             BEGIN{ FS= ":"; ORS = ""; print "{" }
-            { printf "%s\"%s\": \"%s\"", separator, trim($1), trim($2); separator=","}
+            { printf "%s\"%s\": \"%s\"", separator, trim($1), trim($2);
+            separator=","}
             END{ print "}" }'
           comment: all APC parameters in JSON format
       state: present
+  tags: ['apcupsd', 'apcupsd-monitoring']
