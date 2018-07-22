@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: apcupsd
   author: Pierre GINDRAUD
   description: This role install and configure APCUPS daemon
   license: MIT
@@ -9,7 +10,7 @@ galaxy_info:
         - jessie
         - stretch
   galaxy_tags:
-    - raspbian
-    - apcups
+    - apcupsd
+    - apc
 
 dependencies: []

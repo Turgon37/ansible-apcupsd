@@ -11,7 +11,7 @@
 
 - name: Configure service default file
   lineinfile:
-    path: '{{ apcupsd__service_default }}'
+    path: '{{ apcupsd__service_environment }}'
     regexp: '^ISCONFIGURED='
     line: 'ISCONFIGURED=yes'
-  when: apcupsd__service_default is defined
+  when: apcupsd__service_environment is defined
