@@ -42,7 +42,7 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | Name                          | Types/Values | Description                                                                              |
 | ----------------------------- | -------------|------------------------------------------------------------------------------------------|
 | `apcupsd__facts`              | Boolean      | Install the local fact script                                                            |
-| `apcupsd__monitoring`         | String       | The name of the monitoring "profile" to use. Available 'zabbix')                         |
+| `apcupsd__monitoring`         | String       | The name of the monitoring "profile" to use. Available 'zabbix'                         |
 | `apcupsd__service_enabled`    | Boolean      | Enable or not the service                                                                |
 | `apcupsd__net_server`         | Boolean      | Boolean to enable or not the nis server, it allow network client to query the UPS status |
 | `apcupsd__net_server_address` | String       | The network address on which the nis server will listen to                               |
