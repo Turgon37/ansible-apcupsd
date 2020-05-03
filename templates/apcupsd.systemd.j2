@@ -1,0 +1,16 @@
+{{ ansible_managed|comment(decoration='# ') }}
+[Unit]
+Description=UPS power management daemon
+Documentation=man:apcupsd(8)
+
+[Service]
+#ExecStartPre=/lib/apcupsd/prestart
+ExecStartPre=/usr/bin/env ls -l /run/
+ExecStart=/sbin/apcupsd --pid-file {{ apcupsd__service_pidfile }} --config-file {{ apcupsd__configuration_file }}
+Type=forking
+KillMode=process
+RuntimeDirectory={{ apcupsd__runtime_directory|basename }}
+PIDFile={{ apcupsd__service_pidfile }}
+
+[Install]
+WantedBy=multi-user.target

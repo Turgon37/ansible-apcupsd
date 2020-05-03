@@ -1,29 +1,27 @@
 ## apcupsd.conf v1.1 ##
-#
-# {{ ansible_managed }}
-#
+{{ ansible_managed|comment(decoration='# ') }}
 
 #
 # ========= Device configuration parameters ============
 #
 
-UPSNAME {{ apcupsd__upsname }}
+UPSNAME {{ apcupsd__instance.upsname|d(apcupsd__instance.name) }}
 
-UPSCABLE {{ apcupsd__upscable }}
-UPSTYPE {{ apcupsd__upstype }}
-DEVICE {{ apcupsd__device }}
+UPSCABLE {{ apcupsd__instance.upscable }}
+UPSTYPE {{ apcupsd__instance.upstype }}
+DEVICE {{ apcupsd__instance.device }}
 
-UPSCLASS {{ apcupsd__upsclass }}
-UPSMODE {{ apcupsd__upsmode }}
+UPSCLASS {{ apcupsd__instance.upsclass }}
+UPSMODE {{ apcupsd__instance.upsmode }}
 
-POLLTIME {{ apcupsd__polltime|int }}
+POLLTIME {{ apcupsd__instance.polltime|int }}
 
-LOCKFILE {{ apcupsd__lockdir }}
-
+LOCKFILE {{ apcupsd__runtime_directory|replace('%i', apcupsd__instance.name) }}
 
 #
 # ========= General configuration parameters ============
 #
+SCRIPTDIR {{ _apcupsd__instance_scriptdir }}
 
 # SCRIPTDIR <path to script directory>
 #   Directory in which apccontrol and event scripts are located.
@@ -40,7 +38,6 @@ PWRFAILDIR /etc/apcupsd
 #   Directory in which to write the nologin file. The existence
 #   of this flag file tells the OS to disallow new logins.
 NOLOGINDIR /etc
-
 
 #
 # ======== Configuration parameters used during power failures ==========
@@ -109,34 +106,22 @@ KILLDELAY 0
 #
 # ==== Configuration statements for Network Information Server ====
 #
-NETSERVER {{ apcupsd__net_server|ternary('on', 'off') }}
+NETSERVER {{ apcupsd__instance.net_server|ternary('on', 'off') }}
 
-{% if apcupsd__net_server %}
-NISIP {{ apcupsd__net_server_address }}
-NISPORT {{ apcupsd__net_server_port|int }}
+{% if apcupsd__instance.net_server %}
+NISIP {{ apcupsd__instance.net_server_address }}
+NISPORT {{ apcupsd__instance.net_server_port|int }}
 {% endif %}
 
-# If you want the last few EVENTS to be available over the network
-# by the network information server, you must define an EVENTSFILE.
-EVENTSFILE /var/log/apcupsd.events
-
-# EVENTSFILEMAX <kilobytes>
-#  By default, the size of the EVENTSFILE will be not be allowed to exceed
-#  10 kilobytes.  When the file grows beyond this limit, older EVENTS will
-#  be removed from the beginning of the file (first in first out).  The
-#  parameter EVENTSFILEMAX can be set to a different kilobyte value, or set
-#  to zero to allow the EVENTSFILE to grow without limit.
-EVENTSFILEMAX 10
-
+EVENTSFILE {{ apcupsd__logs_directory }}/{{ apcupsd__instance.name }}.events
+EVENTSFILEMAX {{ apcupsd__instance.eventsfilemax|int }}
 
 #
 # ===== Configuration statements to control apcupsd system logging ========
 #
 # Time interval in seconds between writing the STATUS file; 0 disables
 STATTIME 0
-
-# Location of STATUS file (written to only if STATTIME is non-zero)
-STATFILE /var/log/apcupsd.status
+STATFILE {{ apcupsd__lib_directory }}/{{ apcupsd__instance.name }}.status
 
 # LOGSTATS [ on | off ] on enables, off disables
 # Note! This generates a lot of output, so if         

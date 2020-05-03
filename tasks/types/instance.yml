@@ -1,0 +1,120 @@
+---
+
+- name: Check instance prerequisites
+  assert:
+    that:
+      - apcupsd__instance is defined
+      - apcupsd__instance.name is defined
+      - apcupsd__instance.upscable in [
+          'simple', 'smart', 'ether', 'usb', '940-0119A',
+          '940-0127A', '940-0128A', '940-0020B', '940-0020C', '940-0023A',
+          '940-0024B', '940-0024C', '940-1524C', '940-0024G', '940-0095A',
+          '940-0095B', '940-0095C', '940-0625A', 'M-04-02-2000'
+        ]
+      - apcupsd__instance.upstype in [
+          'apcsmart', 'usb', 'net', 'snmp', 'netsnmp',
+          'dumb', 'pcnet', 'modbus'
+        ]
+      - apcupsd__instance.upsclass in ['standalone', 'shareslave', 'sharemaster']
+      - apcupsd__instance.upsmode in ['disable', 'share']
+      - apcupsd__instance.polltime|int
+      - apcupsd__instance.net_server_port|int
+    msg: >
+      apcupsd__instance must be defined with specifications,
+      apcupsd__instance.name must contains the name of the instance,
+  tags: ['always']
+
+- name: Check instance scripts requisites
+  assert:
+    that:
+      - item.name is defined
+      - item.event is defined
+      - item.content is defined
+    msg: >
+      apcupsd__instance.scripts item must have name, event and content keys
+  with_items: '{{ apcupsd__instance.scripts|d([]) }}'
+  tags: ['always']
+
+- name: Init some values
+  set_fact:
+    _apcupsd__instance_config_directory: '{{ apcupsd__config_directory }}/{{ apcupsd__instance.name }}'
+    _apcupsd__instance_scriptdir: '{{ apcupsd__config_directory }}/{{ apcupsd__instance.name }}/scripts'
+  tags: ['always']
+
+- name: Ensure instance directory exists
+  file:
+    path: '{{ item }}'
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  with_items:
+    - '{{ _apcupsd__instance_scriptdir }}'
+  tags: ['apcupsd', 'apcupsd-configure']
+
+- name: Template configuration file
+  template:
+    src: apcupsd.conf.j2
+    dest: "{{ apcupsd__configuration_file.replace('%i', apcupsd__instance.name) }}"
+    owner: root
+    group: root
+    mode: 0644
+  register: _apcupsd__instance_config
+  tags: ['apcupsd', 'apcupsd-configure']
+
+- name: Template apccontrol events handler script
+  template:
+    src: apccontrol.j2
+    dest: '{{ _apcupsd__instance_scriptdir }}/apccontrol'
+    owner: root
+    group: root
+    mode: 0755
+  tags: ['apcupsd', 'apcupsd-configure']
+
+- name: Create instance events scripts directories
+  file:
+    path: '{{ _apcupsd__instance_scriptdir }}/{{ item }}'
+    owner: root
+    group: root
+    mode: 0750
+    state: directory
+  with_items: "{{
+      apcupsd__instance.scripts
+      |d([])
+      |map(attribute='event')
+      |sort|unique|list
+    }}"
+  tags: ['apcupsd', 'apcupsd-configure']
+
+- name: Install instance events scripts
+  copy:
+    dest: '{{ _apcupsd__instance_scriptdir }}/{{ item.event }}/{{ item.name }}'
+    owner: root
+    group: root
+    mode: 0750
+    content: '{{ item.content }}'
+  with_items: '{{ apcupsd__instance.scripts|d([])|list }}'
+  tags: ['apcupsd', 'apcupsd-configure']
+
+- name: Compute instance service status
+  set_fact:
+    _apcupsd__instance_service_status: "{{
+        'restarted'
+        if _apcupsd__instance_config is changed
+        else 'started'
+      }}"
+  tags: ['apcupsd', 'apcupsd-configure']
+
+- name: Ensure dhcpd is started and enabled on boot
+  service:
+    name: "{{ apcupsd__service_name|replace('%i', apcupsd__instance.name) }}"
+    enabled: "{{
+        apcupsd__service_enabled|bool
+        if apcupsd__instance.state|d('present') == 'present'
+        else false
+      }}"
+    state: "{{
+        (apcupsd__service_enabled|bool if apcupsd__instance.state|d('present') == 'present' else false)
+        |ternary(_dhcpd__instance_service_status|d('started'), 'stopped')
+      }}"
+  tags: ['apcupsd', 'apcupsd-configure', 'apcupsd-service']

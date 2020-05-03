@@ -1,7 +1,25 @@
 ---
 
-- name: "Ensure {{ apcupsd__service_name }} is started and enabled on boot"
+- name: "Ensure package service {{ apcupsd__service_name|replace('@%i','') }} is stopped and disabled on boot"
   service:
-    name: '{{ apcupsd__service_name }}'
-    enabled: '{{ apcupsd__service_enabled|bool }}'
-    state: "{{ apcupsd__service_enabled|bool|ternary('started', 'stopped') }}"
+    name: "{{ apcupsd__service_name|replace('@%i','') }}"
+    enabled: false
+    state: stopped
+
+- name: Install apcupsd.service systemd unit file
+  template:
+    src: apcupsd.systemd.j2
+    dest: "/etc/systemd/system/{{ apcupsd__service_name|replace('%i', '') }}.service"
+    owner: root
+    group: root
+    mode: 0744
+  register: _apcupsd__service
+  notify: ['restart-apcupsd']
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: true
+  when: _apcupsd__service is changed
+  changed_when: true
+
+- meta: flush_handlers

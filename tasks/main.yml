@@ -14,32 +14,50 @@
 
 - name: Check role availability
   fail:
-    msg: 'This module only works on Debian or derivatives like Ubuntu'
+    msg: 'This module only works on Debian or derivatives like Ubuntu and with Systemd'
   when: ansible_os_family != 'Debian'
+    or ansible_service_mgr != 'systemd'
   tags: ['always']
 
-- name: Import init tasks
+- name: Importing initialization tasks
   import_tasks: init.yml
   tags: ['always']
 
-- name: Import install tasks
+- name: Importing install tasks
   import_tasks: install.yml
   tags: ['apcupsd', 'apcupsd-install']
 
-- name: Import configuration tasks
+- name: Importing configuration tasks
   import_tasks: configure.yml
   tags: ['apcupsd', 'apcupsd-configure']
 
-- name: Import service tasks
+- name: Importing service tasks
   import_tasks: service.yml
   tags: ['apcupsd', 'apcupsd-service']
 
-- name: Optionally include monitoring tasks
-  include_tasks: 'monitoring/{{ apcupsd__monitoring }}.yml'
+- name: Configure apcupsd instances
+  include_tasks: types/instance.yml
+  vars:
+    apcupsd__instance: "{{
+        apcupsd__instance_defaults
+        |combine({'net_server_port': apcupsd__instance_defaults['net_server_port'] + outer_index|int})
+        |combine(outer_item.1)
+        |combine({'name': outer_item.0}) }}"
+  loop: '{{ apcupsd__instances|dictsort }}'
+  loop_control:
+    loop_var: outer_item
+    index_var: outer_index
+  tags: ['apcupsd', 'apcupsd-configure']
+
+- name: Optionally including monitoring tasks
+  include_tasks: 'monitoring/{{ monitoring_backend }}.yml'
+  loop: '{{ [apcupsd__monitoring]|flatten|unique|list }}'
   when: apcupsd__monitoring is defined
+  loop_control:
+    loop_var: monitoring_backend
   tags: ['apcupsd', 'apcupsd-monitoring']
 
-- name: Optionally include facts tasks
+- name: Optionally including facts tasks
   include_tasks: facts.yml
   when: apcupsd__facts|bool
   tags: ['apcupsd', 'apcupsd-facts']

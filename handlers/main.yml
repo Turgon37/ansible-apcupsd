@@ -2,7 +2,17 @@
 # handlers file for apcupsd
 
 - name: restart-apcupsd
+  stat:
+    path: "{{ apcupsd__configuration_file.replace('%i', item.key) }}"
+  with_dict: '{{ apcupsd__instances }}'
+  register: _apcupsd__handler_restart_config_stats
+  changed_when: true
+  notify: ['restart-apcupsd-after-config-installed']
+
+- name: restart-apcupsd-daemon
   service:
-    name: '{{ apcupsd__service_name }}'
+    name: "{{ apcupsd__service_name|replace('%i', item.item.key) }}"
     state: restarted
-  when: apcupsd__service_enabled|bool
+  with_items: '{{ _apcupsd__handler_restart_config_stats.results|list }}'
+  when: apcupsd__service_enabled|bool and item.stat.exists
+  listen: restart-apcupsd-after-config-installed

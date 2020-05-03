@@ -1,17 +1,18 @@
 ---
 
-- name: Template configuration file
-  template:
-    src: apcupsd.conf.j2
-    dest: '{{ apcupsd__config_file }}'
+- name: Ensure configuration directory exists
+  file:
+    path: '{{ item }}'
     owner: root
     group: root
-    mode: 0644
-  notify: ['restart-apcupsd']
+    mode: 0755
+    state: directory
+  with_items:
+    - '{{ apcupsd__config_directory }}'
+    - '{{ apcupsd__logs_directory }}'
+    - '{{ apcupsd__lib_directory }}'
 
-- name: Configure service default file
-  lineinfile:
-    path: '{{ apcupsd__service_environment }}'
-    regexp: '^ISCONFIGURED='
-    line: 'ISCONFIGURED=yes'
-  when: apcupsd__service_environment is defined
+- name: Remove default configuration file
+  file:
+    path: '{{ apcupsd__config_directory }}/apcupsd.conf'
+    state: absent

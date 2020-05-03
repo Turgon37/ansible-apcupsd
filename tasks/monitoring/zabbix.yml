@@ -10,19 +10,19 @@
       comment: Query the apcupsd daemon
       userparameters:
         - key: apcupsd.value[*]
-          command: >
+          command: >-
             {{ apcupsd__apcaccess_executable }}
             {{ apcupsd__apcaccess_options }} -p '$1'"
           comment: Raw APC parameter
         - key: apcupsd.float[*]
-          command: >
+          command: >-
             {{ apcupsd__apcaccess_executable }}
             {{ apcupsd__apcaccess_options }} -p '$1'
             | awk 'match($$0,/[0-9]+(\.[0-9]+)?/)
             { print substr($$0, RSTART, RLENGTH) }'
           comment: Float APC parameter
         - key: apcupsd.values
-          command: >
+          command: >-
             {{ apcupsd__apcaccess_executable }}
             {{ apcupsd__apcaccess_options }} | awk '
             function ltrim(s) { sub(/^[ \t\r\n]+/, "", s); return s }

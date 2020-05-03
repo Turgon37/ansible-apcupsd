@@ -1,0 +1,22 @@
+#!/bin/sh
+
+{{ ansible_managed|comment(decoration='# ') }}
+
+ROOT_SCRIPT_DIR='{{ _apcupsd__instance_scriptdir }}'
+EVENT_NAME="${1}"
+
+# run theses scripts on all events
+for script in ${ROOT_SCRIPT_DIR}/all/*; do
+  if [ -f $script -a -x $script ]; then
+    "${script}" "${@}"
+  fi
+done
+
+# run event specific scripts
+if [ -d ${ROOT_SCRIPT_DIR}/${EVENT_NAME} ]; then
+  for script in ${ROOT_SCRIPT_DIR}/${EVENT_NAME}/*; do
+    if [ -f $script -a -x $script ]; then
+      "${script}" "${@:2}"
+    fi
+  done
+fi
