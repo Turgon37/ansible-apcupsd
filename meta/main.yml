@@ -3,12 +3,13 @@ galaxy_info:
   author: Pierre GINDRAUD
   description: This role install and configure APCUPS daemon
   license: MIT
-  min_ansible_version: 2.4
+  min_ansible_version: 2.5
   platforms:
     - name: Debian
       versions:
         - jessie
         - stretch
+        - buster
   galaxy_tags:
     - apcupsd
     - apc
