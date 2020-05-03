@@ -7,4 +7,4 @@
       include_role:
         name: ansible-apcupsd
   vars:
-    apcupsd__service_enabled: true
+    apcupsd__service_enabled: false
