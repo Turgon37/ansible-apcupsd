@@ -5,7 +5,6 @@ Documentation=man:apcupsd(8)
 
 [Service]
 #ExecStartPre=/lib/apcupsd/prestart
-ExecStartPre=/usr/bin/env ls -l /run/
 ExecStart=/sbin/apcupsd --pid-file {{ apcupsd__service_pidfile }} --config-file {{ apcupsd__configuration_file }}
 Type=forking
 KillMode=process
