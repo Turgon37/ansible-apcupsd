@@ -28,7 +28,6 @@ provisioner:
   name: ansible
   options:
     diff: true
-    vvv: true
   lint:
     name: ansible-lint
   playbooks:
