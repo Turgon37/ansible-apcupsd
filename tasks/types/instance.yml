@@ -50,6 +50,7 @@
     state: directory
   with_items:
     - '{{ _apcupsd__instance_scriptdir }}'
+    - "{{ apcupsd__instance.pwrfaildir|d(apcupsd__lib_directory~'/'~apcupsd__instance.name) }}"
   tags: ['apcupsd', 'apcupsd-configure']
 
 - name: Template configuration file

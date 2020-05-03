@@ -89,6 +89,7 @@ Content is the script's raw `content`, this will be put in an executable file an
 
 As an exemple, the following events exists
 `killpower commfailure commok powerout onbattery offbattery mainsback failing timeout loadlimit runlimit doreboot doshutdown annoyme emergency changeme remotedown startselftest endselftest battdetach battattach`
+In addition, a custom `all` event make its scripts to receive all event as `$1` argument (like apccontrol).
 
 ### Monitoring
 

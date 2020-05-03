@@ -72,7 +72,94 @@ apcupsd_exporter__network: tcp
 # ---------------------------------------
 # Dict of dhcpd instances
 apcupsd__instances:
-  ups1: {}
+  ups1:
+    scripts:
+      - name: default
+        event: all
+        content: |
+          #!/bin/sh
+
+          APCUPSD=/sbin/apcupsd
+          SHUTDOWN=/sbin/shutdown
+          WALL=wall
+
+          case "$1" in
+              killpower)
+              echo "Apccontrol doing: ${APCUPSD} --killpower on UPS ${2}" | (${WALL} 2>/dev/null || cat)
+              sleep 10
+              ${APCUPSD} --killpower
+              echo "Apccontrol has done: ${APCUPSD} --killpower on UPS ${2}" | (${WALL} 2>/dev/null || cat)
+              ;;
+              commfailure)
+              echo "Warning communications lost with UPS ${2}" | ${WALL}
+              ;;
+              commok)
+              echo "Communications restored with UPS ${2}" | ${WALL}
+              ;;
+          #
+          # powerout, onbattery, offbattery, mainsback events occur
+          #   in that order.
+          #
+              powerout)
+              ;;
+              onbattery)
+              echo "Power failure on UPS ${2}. Running on batteries." | ${WALL}
+              ;;
+              offbattery)
+              echo "Power has returned on UPS ${2}..." | ${WALL}
+              ;;
+              mainsback)
+              if [ -f /etc/apcupsd/powerfail ] ; then
+                 printf "Continuing with shutdown."  | ${WALL}
+              fi
+              ;;
+              failing)
+              echo "Battery power exhausted on UPS ${2}. Doing shutdown." | ${WALL}
+              ;;
+              timeout)
+              echo "Battery time limit exceeded on UPS ${2}. Doing shutdown." | ${WALL}
+              ;;
+              loadlimit)
+              echo "Remaining battery charge below limit on UPS ${2}. Doing shutdown." | ${WALL}
+              ;;
+              runlimit)
+              echo "Remaining battery runtime below limit on UPS ${2}. Doing shutdown." | ${WALL}
+              ;;
+              doreboot)
+              echo "UPS ${2} initiating Reboot Sequence" | ${WALL}
+              ${SHUTDOWN} -r now "apcupsd UPS ${2} initiated reboot"
+              ;;
+              doshutdown)
+              echo "UPS ${2} initiated Shutdown Sequence" | ${WALL}
+              ${SHUTDOWN} -h now "apcupsd UPS ${2} initiated shutdown"
+              ;;
+              annoyme)
+              echo "Power problems with UPS ${2}. Please logoff." | ${WALL}
+              ;;
+              emergency)
+              echo "Emergency Shutdown. Possible battery failure on UPS ${2}." | ${WALL}
+              ;;
+              changeme)
+              echo "Emergency! Batteries have failed on UPS ${2}. Change them NOW" | ${WALL}
+              ;;
+              remotedown)
+              echo "Remote Shutdown. Beginning Shutdown Sequence." | ${WALL}
+              ;;
+              startselftest)
+              ;;
+              endselftest)
+              ;;
+              battdetach)
+              ;;
+              battattach)
+              ;;
+              *)  echo "Usage: ${0##*/} command"
+              echo "       warning: this script is intended to be launched by"
+              echo "       apcupsd and should never be launched by users."
+              exit 1
+              ;;
+          esac
+
 
 # Default values for all apcupsd instances
 apcupsd__instance_defaults:
@@ -194,6 +281,67 @@ apcupsd__instance_defaults:
   # powerfailures, make sure that apccontrol powerout does nothing
   # i.e. comment out the wall.
   onbatterydelay: 6
+
+  #
+  # Note: BATTERYLEVEL, MINUTES, and TIMEOUT work in conjunction, so
+  # the first that occurs will cause the initation of a shutdown.
+  #
+
+  # If during a power failure, the remaining battery percentage
+  # (as reported by the UPS) is below or equal to BATTERYLEVEL,
+  # apcupsd will initiate a system shutdown.
+  batterylevel: 5
+
+  # If during a power failure, the remaining runtime in minutes
+  # (as calculated internally by the UPS) is below or equal to MINUTES,
+  # apcupsd, will initiate a system shutdown.
+  minutes: 3
+
+  # If during a power failure, the UPS has run on batteries for TIMEOUT
+  # many seconds or longer, apcupsd will initiate a system shutdown.
+  # A value of 0 disables this timer.
+  #
+  #  Note, if you have a Smart UPS, you will most likely want to disable
+  #    this timer by setting it to zero. That way, you UPS will continue
+  #    on batteries until either the % charge remaing drops to or below BATTERYLEVEL,
+  #    or the remaining battery runtime drops to or below MINUTES.  Of course,
+  #    if you are testing, setting this to 60 causes a quick system shutdown
+  #    if you pull the power plug.
+  #  If you have an older dumb UPS, you will want to set this to less than
+  #    the time you know you can run on batteries.
+  timeout: 0
+
+  #  Time in seconds between annoying users to signoff prior to
+  #  system shutdown. 0 disables.
+  annoy: 300
+
+  # Initial delay after power failure before warning users to get
+  # off the system.
+  annoydelay: 60
+
+  # The condition which determines when users are prevented from
+  # logging in during a power failure.
+  # NOLOGON <string> [ disable | timeout | percent | minutes | always ]
+  nologon: disable
+
+  # If KILLDELAY is non-zero, apcupsd will continue running after a
+  # shutdown has been requested, and after the specified time in
+  # seconds attempt to kill the power. This is for use on systems
+  # where apcupsd cannot regain control after a shutdown.
+  # KILLDELAY <seconds>  0 disables
+  killdelay: 0
+
+  # PWRFAILDIR <path to powerfail directory>
+  #   Directory in which to write the powerfail flag file. This file
+  #   is created when apcupsd initiates a system shutdown and is
+  #   checked in the OS halt scripts to determine if a killpower
+  #   (turning off UPS output power) is required.
+  # pwrfaildir:
+
+  # NOLOGINDIR <path to nologin directory>
+  #   Directory in which to write the nologin file. The existence
+  #   of this flag file tells the OS to disallow new logins.
+  nologindir: /run
 
 
   ### LOG CONFIGURATION
