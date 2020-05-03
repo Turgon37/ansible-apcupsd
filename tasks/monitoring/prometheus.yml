@@ -1,0 +1,39 @@
+---
+
+- name: Including prometheus_exporter role for exporter installation
+  include_role:
+    name: turgon37.prometheus_exporter
+  vars:
+    prometheus_exporter__name: apcupsd_exporter
+    prometheus_exporter__install_from_url_default: "{{ ansible_architecture == 'x86_64' }}"
+    prometheus_exporter__download_url:
+      "https://github.com/mdlayher/apcupsd_exporter/releases/download/\
+      {{ apcupsd_exporter__version }}/apcupsd_exporter"
+    prometheus_exporter__service_enabled: "{{
+        (
+          (apcupsd__instance_defaults
+          |combine(outer_item.1)
+          )['state']|d('present') == 'present'
+        )|ternary(true, false)
+      }}"
+    prometheus_exporter__service_name: 'apcupsd_exporter.{{ outer_item.0 }}'
+    prometheus_exporter__service_cmdline:
+      - "-apcupsd.addr \"{{
+            (apcupsd__instance_defaults
+            |combine(outer_item.1)
+            )['net_server_address']
+        }}:{{
+            (apcupsd__instance_defaults
+            |combine({'net_server_port': (apcupsd__instance_defaults['net_server_port'] + outer_index|int)})
+            |combine(outer_item.1)
+            )['net_server_port']
+        }}\""
+      - -apcupsd.network "{{ apcupsd_exporter__network }}"
+      - -telemetry.addr "{{ apcupsd_exporter__web_listen_host }}:{{ apcupsd_exporter__web_listen_port }}"
+      - -telemetry.path "{{ apcupsd_exporter__web_path }}"
+  loop: '{{ apcupsd__instances|dictsort }}'
+  when: (apcupsd__instance_defaults|combine(outer_item.1))['net_server']|bool
+  loop_control:
+    loop_var: outer_item
+    index_var: outer_index
+  tags: ['apcupsd', 'apcupsd-monitoring']
