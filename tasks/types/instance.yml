@@ -105,7 +105,7 @@
       }}"
   tags: ['apcupsd', 'apcupsd-configure']
 
-- name: Ensure dhcpd is started and enabled on boot
+- name: Ensure apcupsd instance service is started and enabled on boot
   service:
     name: "{{ apcupsd__service_name|replace('%i', apcupsd__instance.name) }}"
     enabled: "{{
@@ -115,6 +115,6 @@
       }}"
     state: "{{
         (apcupsd__service_enabled|bool if apcupsd__instance.state|d('present') == 'present' else false)
-        |ternary(_dhcpd__instance_service_status|d('started'), 'stopped')
+        |ternary(_apcupsd__instance_service_status|d('started'), 'stopped')
       }}"
   tags: ['apcupsd', 'apcupsd-configure', 'apcupsd-service']

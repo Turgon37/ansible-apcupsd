@@ -6,7 +6,7 @@
     enabled: false
     state: stopped
 
-- name: Install apcupsd.service systemd unit file
+- name: Install {{ apcupsd__service_name }} systemd unit file
   template:
     src: apcupsd.systemd.j2
     dest: "/etc/systemd/system/{{ apcupsd__service_name|replace('%i', '') }}.service"
