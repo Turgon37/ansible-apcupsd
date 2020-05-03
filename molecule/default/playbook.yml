@@ -1,6 +1,10 @@
 ---
-- name: Run role
+- name: Converge
   hosts: all
   any_errors_fatal: true
-  roles:
-    - role: ansible-apcupsd
+  tasks:
+    - name: "Include turgon37.cron"
+      include_role:
+        name: ansible-apcupsd
+  vars:
+    apcupsd__service_enabled: true
