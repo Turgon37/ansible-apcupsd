@@ -195,15 +195,6 @@ apcupsd__instance_defaults:
   # i.e. comment out the wall.
   onbatterydelay: 6
 
-# PWRFAILDIR <path to powerfail directory>
-#   Directory in which to write the powerfail flag file. This file
-#   is created when apcupsd initiates a system shutdown and is
-#   checked in the OS halt scripts to determine if a killpower
-#   (turning off UPS output power) is required.
-
-# NOLOGINDIR <path to nologin directory>
-#   Directory in which to write the nologin file. The existence
-#   of this flag file tells the OS to disallow new logins.
 
   ### LOG CONFIGURATION
   # ---------------------------------------
