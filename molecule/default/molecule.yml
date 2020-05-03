@@ -18,10 +18,21 @@ platforms:
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  - name: debian10
+    image: turgon37/docker-debian10-ansible
+    command: /lib/systemd/systemd
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
 provisioner:
   name: ansible
+  options:
+    diff: true
   lint:
     name: ansible-lint
+  playbooks:
+    create: create.yml
+    converge: playbook.yml
 scenario:
   name: default
 verifier:
