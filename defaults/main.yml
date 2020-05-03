@@ -180,16 +180,45 @@ apcupsd__instance_defaults:
   eventsfilemax: 10
 
 
-### HOOK CONFIGURATION
-# ---------------------------------------
+  ### HOOK CONFIGURATION
+  # ---------------------------------------
+  scripts: []
 
-# Enables/Disables the network information server.
-# If netstatus is on, a network information
-# server process will be started for serving the STATUS and
-# EVENT data over the network (used by CGI programs).
-apcupsd__net_server: true
+  # The ONBATTERYDELAY is the time in seconds from when a power failure
+  #   is detected until we react to it with an onbattery event.
+  #
+  # This means that, apccontrol will be called with the powerout argument
+  # immediately when a power failure is detected.  However, the
+  # onbattery argument is passed to apccontrol only after the
+  # ONBATTERYDELAY time.  If you don't want to be annoyed by short
+  # powerfailures, make sure that apccontrol powerout does nothing
+  # i.e. comment out the wall.
+  onbatterydelay: 6
 
-# IP address on which NIS server will listen for incoming connections.
-apcupsd__net_server_address: 127.0.0.1
-# port to use for sending STATUS and EVENTS data over the network.
-apcupsd__net_server_port: 3551
+# PWRFAILDIR <path to powerfail directory>
+#   Directory in which to write the powerfail flag file. This file
+#   is created when apcupsd initiates a system shutdown and is
+#   checked in the OS halt scripts to determine if a killpower
+#   (turning off UPS output power) is required.
+
+# NOLOGINDIR <path to nologin directory>
+#   Directory in which to write the nologin file. The existence
+#   of this flag file tells the OS to disallow new logins.
+
+  ### LOG CONFIGURATION
+  # ---------------------------------------
+
+  # This generates a lot of output, so if
+  # you turn this on, be sure that the
+  # file defined in syslog.conf for LOG_NOTICE is a named pipe.
+  logstats: false
+
+  # Time interval in seconds between writing the DATA records to
+  # the log file. 0 disables.
+  datatime: 0
+
+  # FACILITY defines the logging facility (class) for logging to syslog.
+  #          If not specified, it defaults to "daemon". This is useful
+  #          if you want to separate the data logged by apcupsd from other
+  #          programs.
+  facility: daemon

@@ -23,36 +23,14 @@ LOCKFILE {{ apcupsd__runtime_directory|replace('%i', apcupsd__instance.name) }}
 #
 SCRIPTDIR {{ _apcupsd__instance_scriptdir }}
 
-# SCRIPTDIR <path to script directory>
-#   Directory in which apccontrol and event scripts are located.
-SCRIPTDIR /etc/apcupsd
-
-# PWRFAILDIR <path to powerfail directory>
-#   Directory in which to write the powerfail flag file. This file
-#   is created when apcupsd initiates a system shutdown and is
-#   checked in the OS halt scripts to determine if a killpower
-#   (turning off UPS output power) is required.
 PWRFAILDIR /etc/apcupsd
-
-# NOLOGINDIR <path to nologin directory>
-#   Directory in which to write the nologin file. The existence
-#   of this flag file tells the OS to disallow new logins.
 NOLOGINDIR /etc
 
 #
 # ======== Configuration parameters used during power failures ==========
 #
 
-# The ONBATTERYDELAY is the time in seconds from when a power failure
-#   is detected until we react to it with an onbattery event.
-#
-#   This means that, apccontrol will be called with the powerout argument
-#   immediately when a power failure is detected.  However, the
-#   onbattery argument is passed to apccontrol only after the 
-#   ONBATTERYDELAY time.  If you don't want to be annoyed by short
-#   powerfailures, make sure that apccontrol powerout does nothing
-#   i.e. comment out the wall.
-ONBATTERYDELAY 6
+ONBATTERYDELAY {{ apcupsd__instance.onbatterydelay|int }}
 
 # 
 # Note: BATTERYLEVEL, MINUTES, and TIMEOUT work in conjunction, so
@@ -119,91 +97,11 @@ EVENTSFILEMAX {{ apcupsd__instance.eventsfilemax|int }}
 #
 # ===== Configuration statements to control apcupsd system logging ========
 #
-# Time interval in seconds between writing the STATUS file; 0 disables
 STATTIME 0
 STATFILE {{ apcupsd__lib_directory }}/{{ apcupsd__instance.name }}.status
 
-# LOGSTATS [ on | off ] on enables, off disables
-# Note! This generates a lot of output, so if         
-#       you turn this on, be sure that the
-#       file defined in syslog.conf for LOG_NOTICE is a named pipe.
-#  You probably do not want this on.
-LOGSTATS off
+LOGSTATS {{ apcupsd__instance.logstats|ternary('on', 'off') }}
 
-# Time interval in seconds between writing the DATA records to
-#   the log file. 0 disables.
-DATATIME 0
+DATATIME {{ apcupsd__instance.datatime }}
 
-# FACILITY defines the logging facility (class) for logging to syslog. 
-#          If not specified, it defaults to "daemon". This is useful 
-#          if you want to separate the data logged by apcupsd from other
-#          programs.
-#FACILITY DAEMON
-
-#
-# ========== Configuration statements used in updating the UPS EPROM =========
-#
-
-#
-# These statements are used only by apctest when choosing "Set EEPROM with conf
-# file values" from the EEPROM menu. THESE STATEMENTS HAVE NO EFFECT ON APCUPSD.
-#
-
-# Battery date - 8 characters
-#BATTDATE mm/dd/yy
-
-# Sensitivity to line voltage quality (H cause faster transfer to batteries)  
-# SENSITIVITY H M L        (default = H)
-#SENSITIVITY H
-
-# UPS delay after power return (seconds)
-# WAKEUP 000 060 180 300   (default = 0)
-#WAKEUP 60
-
-# UPS Grace period after request to power off (seconds)
-# SLEEP 020 180 300 600    (default = 20)
-#SLEEP 180
-
-# Low line voltage causing transfer to batteries
-# The permitted values depend on your model as defined by last letter 
-#  of FIRMWARE or APCMODEL. Some representative values are:
-#    D 106 103 100 097
-#    M 177 172 168 182
-#    A 092 090 088 086
-#    I 208 204 200 196     (default = 0 => not valid)
-#LOTRANSFER  208
-
-# High line voltage causing transfer to batteries
-# The permitted values depend on your model as defined by last letter 
-#  of FIRMWARE or APCMODEL. Some representative values are:
-#    D 127 130 133 136
-#    M 229 234 239 224
-#    A 108 110 112 114
-#    I 253 257 261 265     (default = 0 => not valid)
-#HITRANSFER 253
-
-# Battery charge needed to restore power
-# RETURNCHARGE 00 15 50 90 (default = 15)
-#RETURNCHARGE 15
-
-# Alarm delay 
-# 0 = zero delay after pwr fail, T = power fail + 30 sec, L = low battery, N = never
-# BEEPSTATE 0 T L N        (default = 0)
-#BEEPSTATE T
-
-# Low battery warning delay in minutes
-# LOWBATT 02 05 07 10      (default = 02)
-#LOWBATT 2
-
-# UPS Output voltage when running on batteries
-# The permitted values depend on your model as defined by last letter 
-#  of FIRMWARE or APCMODEL. Some representative values are:
-#    D 115
-#    M 208
-#    A 100
-#    I 230 240 220 225     (default = 0 => not valid)
-#OUTPUTVOLTS 230
-
-# Self test interval in hours 336=2 weeks, 168=1 week, ON=at power on
-# SELFTEST 336 168 ON OFF  (default = 336)
-#SELFTEST 336
+FACILITY {{ apcupsd__instance.facility }}
