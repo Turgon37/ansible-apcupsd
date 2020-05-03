@@ -55,11 +55,16 @@ apcupsd__apcaccess_options: >-
 # Which exporter version do you want
 apcupsd_exporter__version: 0.1.0
 
+# Hostname on which prometheus exporter per instance will listen on
 apcupsd_exporter__web_listen_host: ''
+
+# Starting port number on which prometheus exporter per instance will listen on
 apcupsd_exporter__web_listen_port: 9162
 
+# Url prefix on which prometheus exporter will serve metrics
 apcupsd_exporter__web_path: /metrics
 
+# Network stack to use in prometheus exporter
 apcupsd_exporter__network: tcp
 
 
