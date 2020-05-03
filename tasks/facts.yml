@@ -11,7 +11,7 @@
 
 - name: Insert custom fact file
   copy:
-    src: files/apcupsd.fact.py
+    src: files/apcupsd.facts.py
     dest: "{{ facts__dir|d('/etc/ansible/facts.d') }}/apcupsd.fact"
     mode: 0755
   tags: ['apcupsd', 'apcupsd-facts']
