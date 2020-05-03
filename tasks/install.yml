@@ -2,6 +2,5 @@
 
 - name: Install apcupsd packages
   package:
-    name: '{{ item }}'
+    name: '{{ apcupsd__packages_names|list }}'
     state: present
-  with_items: '{{ apcupsd__packages }}'

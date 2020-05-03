@@ -8,7 +8,7 @@ apcupsd__facts: true
 # apcupsd__monitoring:
 
 # List of packages to install
-apcupsd__packages:
+apcupsd__packages_names:
   - apcupsd
 
 
